@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card-bg: #12121a;
+            --card-bg-hover: #1a1a28;
+            --text: #e8e8f0;
+            --text-muted: #8888a0;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --border: #1e1e2e;
+            --border-hover: #2d2d44;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.1; }
+            25% { transform: translateY(-100px) translateX(50px); opacity: 0.4; }
+            50% { transform: translateY(-50px) translateX(-30px); opacity: 0.2; }
+            75% { transform: translateY(-150px) translateX(20px); opacity: 0.3; }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #e8e8f0 0%, #a5a5c0 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Stats bar */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+        }
+
+        /* Projects Grid */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        /* Project Card */
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        .card-number {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 10px;
+            border-radius: 100px;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-muted);
+        }
+
+        .visit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            transition: gap 0.3s;
+        }
+
+        .project-card:hover .visit-btn {
+            gap: 10px;
+        }
+
+        .arrow {
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* Sub-card for grouped projects */
+        .sub-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .sub-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .sub-card:hover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .sub-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .sub-card-icon.dos {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .sub-card-icon.crazy {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .sub-card-info {
+            flex: 1;
+        }
+
+        .sub-card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .sub-card-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .sub-card-arrow {
+            color: var(--text-muted);
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .sub-card:hover .sub-card-arrow {
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        /* Featured card styling for special entries */
+        .project-card.featured {
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .project-card.featured .card-number {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                gap: 24px;
+            }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+        .delay-9 { animation-delay: 0.9s; }
+        .delay-10 { animation-delay: 1.0s; }
+        .delay-11 { animation-delay: 1.1s; }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="badge reveal">Portfolio 2026</div>
+        <h1 class="reveal delay-1">My Projects</h1>
+        <p class="subtitle reveal delay-2">A curated collection of interactive web experiments, tools, and visualizations I've built.</p>
+
+        <div class="stats reveal delay-3">
+            <div class="stat">
+                <div class="stat-value">11</div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">3D</div>
+                <div class="stat-label">WebGL</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Interactive</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Projects -->
+    <div class="container">
+        <div class="projects-grid">
+
+            <!-- Project 1: Linux System -->
+            <a href="https://dwfcctyh2o6me.ok.kimi.link/?id=2055175377334697984&share_id=19d9fdbd-d7d2-8a19-8000-00001d7799f6" 
+               target="_blank" 
+               class="project-card reveal delay-1"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80" 
+                     alt="Linux System" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Linux System</h3>
+                        <span class="card-number">#01</span>
+                    </div>
+                    <p class="card-desc">An interactive Linux terminal simulation with realistic command parsing, file system navigation, and system utilities. Experience a browser-based OS environment.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">Terminal</span>
+                            <span class="tag">Simulation</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 2: Connectome Constellation -->
+            <a href="https://52pbcykolt4is.ok.kimi.link/?id=2060294363806412800&share_id=19e6ed51-6802-8cdb-8000-00008b6228c0" 
+               target="_blank" 
+               class="project-card reveal delay-2"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=800&q=80" 
+                     alt="Connectome Constellation" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Connectome Constellation</h3>
+                        <span class="card-number">#02</span>
+                    </div>
+                    <p class="card-desc">A 3D network visualization of 244 neuroscience papers across 9 schools with 21,285 connections. Explore the living literature map of brain connectivity research.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">3D</span>
+                            <span class="tag">Data Viz</span>
+                            <span class="tag">Network</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 3: VS Code Web Replica -->
+            <a href="https://gmzousbtqpx5w.kimi.page/?id=2057734416816013312&share_id=19e4e6a6-9342-8f07-8000-0000296a37dd" 
+               target="_blank" 
+               class="project-card reveal delay-3"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80" 
+                     alt="VS Code Web Replica" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">VS Code Web Replica</h3>
+                        <span class="card-number">#03</span>
+                    </div>
+                    <p class="card-desc">A faithful browser-based recreation of Visual Studio Code's interface. Features syntax highlighting, file explorer, and terminal integration — all in the browser.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">Editor</span>
+                            <span class="tag">UI/UX</span>
+                            <span class="tag">Web App</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 4: Earth Radio -->
+            <a href="https://3nw3gys4xangi.ok.kimi.link/?id=2060309010383118336&share_id=19e6ed22-b5a2-8496-8000-00003833d62a" 
+               target="_blank" 
+               class="project-card reveal delay-4"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80" 
+                     alt="Earth Radio" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Earth Radio</h3>
+                        <span class="card-number">#04</span>
+                    </div>
+                    <p class="card-desc">An immersive audio-visual experience streaming radio stations from around the globe. Spin the Earth to tune into different regions and cultures in real-time.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">Audio</span>
+                            <span class="tag">Globe</span>
+                            <span class="tag">Streaming</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 5: 3D LA Storefront Websites -->
+            <a href="https://k74texrr3svww.kimi.page/?id=2057731894864904192&share_id=19e4e701-f912-831a-8000-00004c0d66ec" 
+               target="_blank" 
+               class="project-card reveal delay-5"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80" 
+                     alt="3D LA Storefront Websites" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">3D LA Storefront Websites</h3>
+                        <span class="card-number">#05</span>
+                    </div>
+                    <p class="card-desc">30 unique one-page websites for real LA small businesses across 16 neighborhoods. Each storefront features custom typography, photography, and 3D interactions.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">3D</span>
+                            <span class="tag">E-Commerce</span>
+                            <span class="tag">Local</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 6: Zotero Clone -->
+            <a href="https://oz3ia64j4zozg.kimi.page/?id=2069775581044883456&share_id=19ea72a3-aad2-8147-8000-0000726931a6" 
+               target="_blank" 
+               class="project-card reveal delay-6"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80" 
+                     alt="Zotero Clone" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Zotero Clone</h3>
+                        <span class="card-number">#06</span>
+                    </div>
+                    <p class="card-desc">A web-based academic paper reference manager inspired by Zotero. Browse, search, and organize hundreds of research papers from arXiv with clean list views and metadata.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">Research</span>
+                            <span class="tag">Bibliography</span>
+                            <span class="tag">arXiv</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 7: Online Games (Grouped) -->
+            <div class="project-card reveal delay-7"
+                 onmousemove="handleMouseMove(event, this)"
+                 onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80" 
+                     alt="Online Games" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Online Games</h3>
+                        <span class="card-number">#07</span>
+                    </div>
+                    <p class="card-desc">A collection of browser-based gaming platforms offering classic and modern games playable instantly without downloads or intrusive ads.</p>
+
+                    <div class="sub-cards">
+                        <a href="https://dos.zone/" target="_blank" class="sub-card">
+                            <div class="sub-card-icon dos">I</div>
+                            <div class="sub-card-info">
+                                <div class="sub-card-title">DOS GAMES</div>
+                                <div class="sub-card-desc">Classic MS-DOS emulator — DOOM, Wolfenstein, SimCity & more</div>
+                            </div>
+                            <span class="sub-card-arrow">→</span>
+                        </a>
+                        <a href="https://crazygames.com" target="_blank" class="sub-card">
+                            <div class="sub-card-icon crazy">II</div>
+                            <div class="sub-card-info">
+                                <div class="sub-card-title">CRAZY GAMES</div>
+                                <div class="sub-card-desc">4,500+ free online games — .io, racing, shooting & more</div>
+                            </div>
+                            <span class="sub-card-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 8: Play Canvas Game Engine -->
+            <a href="https://playcanvas.com" 
+               target="_blank" 
+               class="project-card reveal delay-8"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1614726365723-49cfae92782f?w=800&q=80" 
+                     alt="Play Canvas Game Engine" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Play Canvas Game Engine</h3>
+                        <span class="card-number">#08</span>
+                    </div>
+                    <p class="card-desc">A powerful open-source WebGL game engine for building high-performance 3D games and interactive experiences directly in the browser. Features real-time collaboration and cloud-based editing.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">WebGL</span>
+                            <span class="tag">Game Engine</span>
+                            <span class="tag">3D</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 9: NVIDIA AI Boom Analysis -->
+            <a href="https://hpyxfsvatloaa.ok.kimi.link/?id=2009509794587799552&share_id=19b46573-83b2-8f2d-8000-00006a6b3a06" 
+               target="_blank" 
+               class="project-card reveal delay-9"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" 
+                     alt="NVIDIA AI Boom Analysis" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">NVIDIA AI Boom Analysis</h3>
+                        <span class="card-number">#09</span>
+                    </div>
+                    <p class="card-desc">An in-depth analysis dashboard exploring NVIDIA's explosive growth in the AI era. Visualize market trends, GPU demand surges, and the semiconductor revolution powering modern AI.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">AI</span>
+                            <span class="tag">Finance</span>
+                            <span class="tag">Data Viz</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 10: The Museum Review -->
+            <a href="https://7scs4mlekxa32.ok.kimi.link/?id=2045915724247228416&share_id=19da9705-b6d2-81dd-8000-0000034b61c0" 
+               target="_blank" 
+               class="project-card reveal delay-10"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1566127444979-b3d2b654e3f7?w=800&q=80" 
+                     alt="The Museum Review" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">The Museum Review</h3>
+                        <span class="card-number">#10</span>
+                    </div>
+                    <p class="card-desc">A curated digital journey through the British Museum's collection spanning 2 million years of human history. Features the Rosetta Stone, Elgin Marbles, Sutton Hoo Helmet, and more iconic artifacts.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">History</span>
+                            <span class="tag">Museum</span>
+                            <span class="tag">Culture</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 11: Best Coding Agent -->
+            <a href="https://www.kimi.com/" 
+               target="_blank" 
+               class="project-card featured reveal delay-11"
+               onmousemove="handleMouseMove(event, this)"
+               onmouseleave="handleMouseLeave(this)">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80" 
+                     alt="Best Coding Agent" class="card-image">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Best Coding Agent in the World</h3>
+                        <span class="card-number">#11</span>
+                    </div>
+                    <p class="card-desc">The ultimate AI coding assistant that powers this entire portfolio. Capable of understanding complex requirements, writing production-ready code, debugging, and building complete applications from a single prompt.</p>
+                    <div class="card-footer">
+                        <div class="tags">
+                            <span class="tag">AI</span>
+                            <span class="tag">Coding</span>
+                            <span class="tag">Assistant</span>
+                        </div>
+                        <span class="visit-btn">
+                            Visit <span class="arrow">→</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Built with passion · <a href="#">Back to Top ↑</a></p>
+    </footer>
+
+    <script>
+        // Generate background particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Mouse tracking for card glow effect
+        function handleMouseMove(e, card) {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            card.style.setProperty('--mouse-x', x + '%');
+            card.style.setProperty('--mouse-y', y + '%');
+        }
+
+        function handleMouseLeave(card) {
+            card.style.setProperty('--mouse-x', '50%');
+            card.style.setProperty('--mouse-y', '50%');
+        }
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
